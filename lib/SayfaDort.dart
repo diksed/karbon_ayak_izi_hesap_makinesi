@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:karbon_ayak_izi_hesap_makinesi/SayfaBes.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -105,7 +106,7 @@ class _SayfaDortState extends State<SayfaDort> {
                       splashColor: Colors.green, // Splash color
                       onTap: () async {
                         await data.setDataInt("elektrikTuketim", elektrikTuketim);
-
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SayfaBes()));
                       },
                       child: SizedBox(width: 56, height: 56, child: Icon(Icons.chevron_right,color: Colors.white,)),
                     ),
