@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/kaiBilgi.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/data.dart';
+import 'package:karbon_ayak_izi_hesap_makinesi/SayfaIki.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,7 +108,7 @@ class _AnaSayfaState extends State<AnaSayfa> {
                     child: InkWell(
                       splashColor: Colors.green, // Splash color
                       onTap: () async {
-
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SayfaIki()));
                       },
                       child: SizedBox(width: 56, height: 56, child: Icon(Icons.chevron_right,color: Colors.white,)),
                     ),
