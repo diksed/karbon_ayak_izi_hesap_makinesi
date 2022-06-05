@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:karbon_ayak_izi_hesap_makinesi/SayfaSonuc.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -155,7 +156,7 @@ class _SayfaBesState extends State<SayfaBes> {
                       onTap: () async {
                         await data.setDataString("secilenIsinma", secilenIsinma!);
                         await data.setDataInt("yakitTuketim", yakitTuketim);
-
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SayfaSonuc()));
                       },
                       child: SizedBox(width: 56, height: 56, child: Icon(Icons.chevron_right,color: Colors.white,)),
                     ),
