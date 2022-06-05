@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:karbon_ayak_izi_hesap_makinesi/SayfaDort.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-class SayfaUc extends StatefulWidget {
-  const SayfaUc({Key? key}) : super(key: key);
+
+class SayfaDort extends StatefulWidget {
+  const SayfaDort({Key? key}) : super(key: key);
 
   @override
-  State<SayfaUc> createState() => _SayfaUcState();
+  State<SayfaDort> createState() => _SayfaDortState();
 }
-
-class _SayfaUcState extends State<SayfaUc> {
-  double percent = 0.28;
-  var yakitList = <String>["Benzin","Dizel","LPG"];
-  String? secilenYakit;
-  int yakitLitre = 0;
-  String? yakitTuru;
-
+class _SayfaDortState extends State<SayfaDort> {
+  double percent = 0.52;
+  int elektrikTuketim = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +35,11 @@ class _SayfaUcState extends State<SayfaUc> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("resimler/araba.png",
+                Image.asset("resimler/simsek.png",
                   width: 50,
                   height: 50,
                 ),
-                Text("Kara Ulaşımı",style: TextStyle(fontSize: 40),),
+                Text("Elektrik Tüketimi",style: TextStyle(fontSize: 40),),
               ],
             ),
             Container(
@@ -53,38 +48,11 @@ class _SayfaUcState extends State<SayfaUc> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8,right: 8),
-              child: Text("Arabayı hızlı kullanmamak, hem daha az yakıt harcamak, hem de doğaya az zarar vermek demektir.",style: TextStyle(fontSize: 20),),
+              child: Text("Evinde kullandığın ürünlerin ve ampullerin enerji dostu olması doğa için çok faydalıdır.",style: TextStyle(fontSize: 20),),
             ),
             Container(
               height: 3,
               color: Colors.lightGreen[200],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(40,0,10,0),
-                  child: Text("Yakıt Türü :",style: TextStyle(fontSize: 20),),
-                ),
-                DropdownButton<String>(
-                  value: yakitTuru,
-                  hint: Text("Tür Seçiniz"),
-                  items: yakitList.map<DropdownMenuItem<String>>((String value){
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text("$value",style: TextStyle(fontSize: 20),),
-                    );
-                  }).toList(),
-                  icon: Icon(Icons.arrow_drop_down),
-                  onChanged: (String? selectedData){
-                    setState(() {
-                      secilenYakit=selectedData ?? "";
-                      yakitTuru=secilenYakit;
-                      percent = 0.38;
-                    });
-                  },
-                ),
-              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -99,15 +67,15 @@ class _SayfaUcState extends State<SayfaUc> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,45,0),
                     child: TextField(
-                      decoration: InputDecoration(hintText: "Litre"),
+                      decoration: InputDecoration(hintText: "kwh"),
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
                       ],
                       onChanged: (String? data){
                         setState(() {
-                          yakitLitre = int.parse(data!);
-                          percent = 0.52;
+                          elektrikTuketim = int.parse(data!);
+                          percent = 0.66;
                         });
                       },
                     ),
@@ -136,9 +104,8 @@ class _SayfaUcState extends State<SayfaUc> {
                     child: InkWell(
                       splashColor: Colors.green, // Splash color
                       onTap: () async {
-                        await data.setDataInt("yakitLitre", yakitLitre);
-                        await data.setDataString("yakitTuru", yakitTuru!);
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SayfaDort()));
+                        await data.setDataInt("elektrikTuketim", elektrikTuketim);
+
                       },
                       child: SizedBox(width: 56, height: 56, child: Icon(Icons.chevron_right,color: Colors.white,)),
                     ),
@@ -149,7 +116,6 @@ class _SayfaUcState extends State<SayfaUc> {
           ],
         ),
       ),
-
     );
   }
 }
