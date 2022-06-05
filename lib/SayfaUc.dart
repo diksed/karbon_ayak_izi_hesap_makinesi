@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/material.dart';
-import 'package:karbon_ayak_izi_hesap_makinesi/SayfaUc.dart';
+import 'package:flutter/services.dart';
 import 'package:karbon_ayak_izi_hesap_makinesi/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-
-class SayfaIki extends StatefulWidget {
-  const SayfaIki({Key? key}) : super(key: key);
+class SayfaUc extends StatefulWidget {
+  const SayfaUc({Key? key}) : super(key: key);
 
   @override
-  State<SayfaIki> createState() => _SayfaIkiState();
+  State<SayfaUc> createState() => _SayfaUcState();
 }
 
-class _SayfaIkiState extends State<SayfaIki> {
-  var saatList = <int>[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
-  double percent = 0.0;
-  int secilenSaat = 0;
-  int ucusSuresi = 0;
-  int ucusSayisi = 0;
+class _SayfaUcState extends State<SayfaUc> {
+  double percent = 0.28;
+  var yakitList = <String>["Benzin","Dizel","LPG"];
+  String? secilenYakit;
+  int yakitLitre = 0;
+  String? yakitTuru;
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +39,11 @@ class _SayfaIkiState extends State<SayfaIki> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("resimler/ucak.png",
+                Image.asset("resimler/araba.png",
                   width: 50,
                   height: 50,
                 ),
-                Text("Hava Ulaşımı",style: TextStyle(fontSize: 40),),
+                Text("Kara Ulaşımı",style: TextStyle(fontSize: 40),),
               ],
             ),
             Container(
@@ -54,7 +52,7 @@ class _SayfaIkiState extends State<SayfaIki> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8,right: 8),
-              child: Text("Uçaklar, yüksek derecede fosil yakıt kullanırlar ve doğaya ciddi anlamda zarar verirler.",style: TextStyle(fontSize: 20),),
+              child: Text("Arabayı hızlı kullanmamak, hem daha az yakıt harcamak, hem de doğaya az zarar vermek demektir.",style: TextStyle(fontSize: 20),),
             ),
             Container(
               height: 3,
@@ -63,22 +61,25 @@ class _SayfaIkiState extends State<SayfaIki> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Uçuş Süresi (Tek Yön) :",style: TextStyle(fontSize: 20),),
-                DropdownButton<int>(
-                  menuMaxHeight: 250,
-                  value: secilenSaat,
-                  items: saatList.map<DropdownMenuItem<int>>((int value){
-                    return DropdownMenuItem<int>(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40,0,10,0),
+                  child: Text("Yakıt Türü :",style: TextStyle(fontSize: 20),),
+                ),
+                DropdownButton<String>(
+                  value: yakitTuru,
+                  hint: Text("Tür Seçiniz"),
+                  items: yakitList.map<DropdownMenuItem<String>>((String value){
+                    return DropdownMenuItem<String>(
                       value: value,
-                      child: Text("$value saat",style: TextStyle(fontSize: 20),),
+                      child: Text("$value",style: TextStyle(fontSize: 20),),
                     );
                   }).toList(),
                   icon: Icon(Icons.arrow_drop_down),
-                  onChanged: (int? selectedData){
+                  onChanged: (String? selectedData){
                     setState(() {
-                      secilenSaat=selectedData!;
-                      ucusSuresi = secilenSaat;
-                      percent=0.14;
+                      secilenYakit=selectedData ?? "";
+                      yakitTuru=secilenYakit;
+                      percent = 0.38;
                     });
                   },
                 ),
@@ -87,20 +88,28 @@ class _SayfaIkiState extends State<SayfaIki> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Uçuş Sayısı :",style: TextStyle(fontSize: 20),),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0,0,5,0),
+                  child: Text("Yıllık Toplam Tüketim :",style: TextStyle(fontSize: 20),),
+                ),
                 SizedBox(
-                  width: 150,
-                  height: 50,
-                  child: SpinBox(
-                    min: 0,
-                    max: 50,
-                    value: 0,
-                    onChanged: (data){
-                      setState(() {
-                        ucusSayisi = data.toInt();
-                        percent = 0.28;
-                      });
-                    },
+                  width: 100,
+                  height: 30,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0,0,45,0),
+                    child: TextField(
+                      decoration: InputDecoration(hintText: "Litre"),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      onChanged: (String? data){
+                        setState(() {
+                          yakitLitre = int.parse(data!);
+                          percent = 0.52;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -126,9 +135,9 @@ class _SayfaIkiState extends State<SayfaIki> {
                     child: InkWell(
                       splashColor: Colors.green, // Splash color
                       onTap: () async {
-                        await data.setDataInt("ucusSuresi", ucusSuresi);
-                        await data.setDataInt("ucusSayisi", ucusSayisi);
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SayfaUc()));
+                        await data.setDataInt("yakitLitre", yakitLitre);
+                        await data.setDataString("yakitTuru", yakitTuru!);
+
                       },
                       child: SizedBox(width: 56, height: 56, child: Icon(Icons.chevron_right,color: Colors.white,)),
                     ),
@@ -139,6 +148,7 @@ class _SayfaIkiState extends State<SayfaIki> {
           ],
         ),
       ),
+
     );
   }
 }
